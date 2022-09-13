@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('messages', function (Blueprint $table) {
-            $table->string('uuid')->unique();
+            $table->string('uuid')->unique()->primary();
             $table->string('user_uuid');
             $table->string('message');
             $table->integer('like_count');

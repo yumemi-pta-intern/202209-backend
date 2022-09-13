@@ -14,10 +14,10 @@ return new class extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->string('uuid')->unique();
+            $table->uuid('uuid')->unique()->primary();
             $table->string('name');
             $table->string('hashed_password');
-            $table->string('profile_message');
+            $table->string('profile_message')->nullable();
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
         });
