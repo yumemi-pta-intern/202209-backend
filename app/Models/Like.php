@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Like extends Model
 {
     use HasFactory;
+
+    protected $guarded = [];
+
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'string';
 }
