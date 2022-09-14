@@ -18,16 +18,9 @@ class User extends Authenticatable
         'hashed_password',
     ];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
     protected $primaryKey = 'uuid';
 
     public $incrementing = false;
 
     protected $keyType = 'string';
-
-    protected $dateFormat = 'Y-m-d H:i:s';
 }
