@@ -16,6 +16,9 @@ class Message extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = NULL;
 
-    
+    protected $guarded = [];
+    protected $attributes = [
+        'like_count' => 0
+    ];
     
 }
