@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+
+use UUID\UUID;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Message extends Model
 {
@@ -14,7 +17,18 @@ class Message extends Model
 
     protected $guarded = [];
     protected $attributes = [
-        'like_count' => 0
+        'like_count' => 0,
     ];
+
+    const UPDATED_AT = null;
     
+    public static function boot() 
+    {
+        parent::boot();
+	    self::creating(function (Message $message) {
+            $message->user_uuid = Auth::user()->id;
+            $message->uuid = UUID::uuid7();
+        });
+	}
+
 }
