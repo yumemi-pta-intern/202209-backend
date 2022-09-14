@@ -11,13 +11,7 @@ class Like extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-    ];
-
     protected $primaryKey = 'id';
 
     protected $keyType = 'string';
-
-    protected $dateFormat = 'Y-m-d H:i:s';
 }
