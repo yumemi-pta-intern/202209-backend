@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ccbd816a07b206f971042295b899d1ba",
+    "content-hash": "6bc320969f79a0722a7a661b3bb689c2",
     "packages": [
         {
             "name": "brick/math",
@@ -2097,6 +2097,45 @@
                 }
             ],
             "time": "2022-08-01T11:03:24+00:00"
+        },
+        {
+            "name": "oittaa/uuid",
+            "version": "1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/oittaa/uuid-php.git",
+                "reference": "5bbc670f3ff7243935832a784226960cda1e1352"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/oittaa/uuid-php/zipball/5bbc670f3ff7243935832a784226960cda1e1352",
+                "reference": "5bbc670f3ff7243935832a784226960cda1e1352",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4 || ^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "UUID\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A small PHP class for generating RFC 4122 version 3, 4, and 5 universally unique identifiers (UUID). Additionally supports draft versions 6 and 7.",
+            "keywords": [
+                "guid",
+                "identifier",
+                "uuid"
+            ],
+            "support": {
+                "issues": "https://github.com/oittaa/uuid-php/issues",
+                "source": "https://github.com/oittaa/uuid-php/tree/1.8"
+            },
+            "time": "2022-06-25T16:21:20+00:00"
         },
         {
             "name": "phpoption/phpoption",
