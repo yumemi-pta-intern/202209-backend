@@ -13,9 +13,8 @@ class Message extends Model
     protected $keyType = 'string';
     
     protected $dateFormat = 'Y-m-d H:i:s';
-    const CREATED_AT = 'create_datetime';
+    const CREATED_AT = 'created_at';
     const UPDATED_AT = NULL;
-    public $timestamps = false;
 
     
     
