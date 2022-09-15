@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use UUID\UUID;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,11 +16,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        \App\Models\User::create([
+            'uuid' => UUID::uuid7(),
+            'name' => 'Test User',
+            'profile_message' => 'seeder message',
+            'hashed_password' => Hash::make('password')
+        ]);
+        \App\Models\Message::create([
+            'user_uuid' => 'test',
+            'message' => 'test message1'
+        ]);
+        \App\Models\Message::create([
+            'user_uuid' => 'test',
+            'message' => 'test message2'
+        ]);
     }
 }
