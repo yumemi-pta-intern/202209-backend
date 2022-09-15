@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-use UUID\UUID;
-
 class UserController extends Controller
 {
     public function signup(Request $request)
@@ -19,7 +17,6 @@ class UserController extends Controller
         ]);
 
         $user = User::query()->create([
-            'uuid' => UUID::uuid7(),
             'name' => $request->input('name'),
             'hashed_password' => Hash::make($request->input('password')),
         ]);
