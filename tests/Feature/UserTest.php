@@ -20,6 +20,8 @@ class UserTest extends TestCase
     public function test_making_account()
     {
         $name = 'hogehoge';
+
+        // アカウント登録
         $response = $this->post('/api/signup', [
             'name' => $name,
             'password' => 'hogehoge',
@@ -40,8 +42,10 @@ class UserTest extends TestCase
      */
     public function test_making_account_with_same_id()
     {
+        // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
 
+        // nameを重複させてアカウント登録
         $response = $this->post('/api/signup', [
             'name' => 'hogehoge',
             'password' => 'hogehoge',
@@ -56,16 +60,23 @@ class UserTest extends TestCase
      */
     public function test_login_with_valid_account()
     {
+        $name = 'hogehoge';
+        
+        // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
 
+        // hogehogeでログイン試行
         $response = $this->post('/api/login', [
-            'name' => 'hogehoge',
+            'name' => $name,
             'password' => 'hogehoge',
         ]);
 
         // 200とcookieでセッションIDが返ってきていること
         $response->assertStatus(200);
         $response->assertCookie('laravel_session');
+        // $nameの人がログインしていること
+        $user = User::query()->where('name', $name)->first();
+        $this->assertAuthenticatedAs($user);
     }
 
     /**
@@ -73,8 +84,9 @@ class UserTest extends TestCase
      */
     public function test_login_with_invalid_password()
     {
+        // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
-
+        // DBに誤ったpwでログイン試行
         $response = $this->post('/api/login', [
             'name' => 'hogehoge',
             'password' => 'hugahuga',
@@ -89,8 +101,9 @@ class UserTest extends TestCase
      */
     public function test_login_with_invalid_account()
     {
+        // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
-
+        // DBに登録していないhugahugaユーザーでログイン試行
         $response = $this->post('/api/login', [
             'name' => 'hugahuga',
             'password' => 'hugahuga',
@@ -107,12 +120,11 @@ class UserTest extends TestCase
      */
     public function test_logout()
     {
+        // DBにhogehogeユーザーを用意
         $user = User::factory()->create();
-
+        // hogehogeユーザーでログイン状態に
         $response = $this->actingAs($user);
-        // ユーザーが認証されていること
-        $this->assertAuthenticatedAs($user);
-
+        // ログアウトを試行
         $response = $response->post('/api/logout');
 
         // 200でありユーザーが認証されていないこと
@@ -125,13 +137,15 @@ class UserTest extends TestCase
      */
     public function test_getting_user_info()
     {
+        // uuid生成を固定
         Str::freezeUuids();
-
+        // DBにhogehogeユーザーを用意
         $user = User::factory()->create();
-
+        // hogehogeユーザーの情報を取得
         $response = $this->actingAs($user)
                          ->get("/api/user/{$user->uuid}");
 
+        // uuid生成固定を解除
         Str::createUuidsNormally();
 
         // 200であること
@@ -144,10 +158,12 @@ class UserTest extends TestCase
      */
     public function test_update_user_profile()
     {
+        // DBにhogehogeユーザーを用意
         $user = User::factory()->create();
 
         $new_name = 'hogehoge';
         $new_profile = 'hogehogehugahuga';
+        // hogehogeユーザーのプロフを更新
         $response = $this->actingAs($user)
                          ->put("/api/user/profile", [
                             'name' => $new_name,
@@ -167,9 +183,11 @@ class UserTest extends TestCase
      */
     public function test_update_user_password()
     {
+        // DBにhogehogeユーザーを用意
         $user = User::factory()->create();
 
         $new_password = 'hogehogehugahuga';
+        // パスワード更新を試行
         $response = $this->actingAs($user)
                          ->put("/api/user/profile", [
                             'old_password' => $user->password,
@@ -189,9 +207,11 @@ class UserTest extends TestCase
      */
     public function test_update_user_password_with_invalid_password()
     {
+        // DBにhogehogeユーザーを用意
         $user = User::factory()->create();
 
         $new_password = 'hogehogehugahuga';
+        // パスワード更新を誤ったパスワードで試行
         $response = $this->actingAs($user)
                          ->put("/api/user/profile", [
                             'old_password' => 'invalid_pw',
