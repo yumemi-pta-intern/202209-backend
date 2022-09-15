@@ -13,7 +13,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|unique:App\Models\User|max:255',
-            'password' => 'required',
+            'password' => 'required|string',
         ]);
 
         $user = User::query()->create([
