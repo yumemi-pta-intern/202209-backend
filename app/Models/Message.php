@@ -38,7 +38,7 @@ class Message extends Model
     }
     public function likes()
     {
-        return $this->hasMany(Like::class, 'message_uuid');
+        return $this->hasMany(Like::class, 'message_uuid', 'uuid');
     }
 
 }

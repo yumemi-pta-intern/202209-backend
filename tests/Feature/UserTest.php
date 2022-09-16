@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Message;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -140,20 +141,49 @@ class UserTest extends TestCase
     /**
      * ユーザー情報を取得
      */
-    public function test_getting_user_info()
-    {
-        // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
-        $user = User::query()->where('name', 'hogehoge')->first();
+    // public function test_getting_user_info()
+    // {
+    //     // DBにhogehogeユーザーを用意
+    //     // $user = User::factory()->has(Message::factory()->count(5))->create([
+    //     //     'name' => 'hogehoge',
+    //     //     'hashed_password' => Hash::make('hogehoge'),
+    //     // ]);
+    //     $user = User::factory()->create([
+    //         'name' => 'hogehoge',
+    //         'hashed_password' => Hash::make('hogehoge'),
+    //     ]);
+    //     dump($user->uuid);
+    //     $message = Message::factory()->make();
+    //     $message->user_uuid = $user->uuid;
+    //     $message->create();
 
-        // hogehogeユーザーの情報を取得
-        $response = $this->actingAs($user)
-                         ->get("/api/user/{$user->uuid}");
+    //     dump($message);
+    //     dd($user);
 
-        // 200であること
-        $response->assertStatus(200);
-        // TODO: 正しいname, user_profile, messagesなどが返ってきていること
-    }
+    //     // hogehogeユーザーの情報を取得
+    //     $response = $this->actingAs($user)
+    //                      ->get("/api/user/{$user->uuid}");
+
+    //     // 200であること
+    //     $response->assertStatus(200);
+    //     // TODO: 正しいname, user_profile, messagesなどが返ってきていること
+    //     // {
+    //     //     "status": 200,
+    //     //     "data": [
+    //     //         {
+    //     //             "name": 名前,
+    //     //             "messages": [
+    //     //                 {
+    //     //                     "user_uuid": 投稿ユーザーのuuid,
+    //     //                     "message": 本文,
+    //     //                     "like_count": 0,
+    //     //                     "like_status": bool,
+    //     //                 },
+    //     //             ]
+    //     //         },
+    //     //     ]
+    //     // }
+    // }
 
     /**
      * ユーザー情報を更新
