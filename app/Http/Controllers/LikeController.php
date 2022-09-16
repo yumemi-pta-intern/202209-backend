@@ -22,11 +22,13 @@ class LikeController extends Controller
         $like->save();
 
         // like が10より少ない時、messageテーブルのlike_countを更新
-        $int = Like::where('message_uuid', $message_uuid)->count();
-        if ($int <10) {
-            $called = app()->make('App\Http\Controllers\MessageController');
-            $called->updateLikeCount($message_uuid, $int);
-        }
+        // $int = Like::where('message_uuid', $message_uuid)->count();
+        // if ($int < 10) {
+        //     $called = app()->make('App\Http\Controllers\MessageController');
+        //     $called->updateLikeCount($message_uuid, $int);
+        // }
+        $called = app()->make('App\Http\Controllers\MessageController');
+        $called->countUp($message_uuid);
 
         return response()->json(['status' => Response::HTTP_OK]);
     }
@@ -34,11 +36,13 @@ class LikeController extends Controller
     {
         $deleted = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->delete();
 
-        $int = Like::where('message_uuid', $message_uuid)->count();
-        if ($int < 10) {
-            $called = app()->make('App\Http\Controllers\MessageController');
-            $called->updateLikeCount($message_uuid, $int);
-        }
+        // $int = Like::where('message_uuid', $message_uuid)->count();
+        // if ($int < 10) {
+        //     $called = app()->make('App\Http\Controllers\MessageController');
+        //     $called->updateLikeCount($message_uuid, $int);
+        // }
+        $called = app()->make('App\Http\Controllers\MessageController');
+        $called->countDown($message_uuid);
         return response()->json(['status' => Response::HTTP_OK]);
     }
 }

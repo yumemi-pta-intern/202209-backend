@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Message;
@@ -35,7 +36,7 @@ class MessageController extends Controller
 
     public function show(Request $request, $message_id)
     {
-        // $message = Message::selectRaw('uuid, message, user_uuid, like_count, EXISTS(SELECT * FROM likes WHERE user_uuid=? && message_uuid=uuid) as like_status, created_at', [Auth::id()])->where('uuid', $message_id)->firstOrFail();
+        // $this->updateLikeCount($message_id);
         $message = Message::query()
                 ->join('users', 'user_uuid', '=', 'users.uuid')
                 ->select('name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
@@ -45,10 +46,21 @@ class MessageController extends Controller
         return response()->json(['status' => Response::HTTP_OK, 'data' => $message]);
     }
 
-    public function updateLikeCount($uuid, $int)
+    public function updateLikeCount($uuid)
     {
+        $int = Like::where('message_uuid', $uuid)->count();
         $message = Message::where('uuid', $uuid)->first();
         $message->like_count = $int;
         $message->save();
     }
+
+    public function countUp($uuid)
+    {
+        Message::find($uuid)->increment('like_count');
+    }
+    public function countDown($uuid)
+    {
+        Message::find($uuid)->decrement('like_count');
+    }
+
 }
