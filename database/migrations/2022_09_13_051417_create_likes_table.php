@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('likes', function (Blueprint $table) {
-            $table->string('id')->unique()->primary();
+            $table->id();
             $table->string('user_uuid');
             $table->string('message_uuid');
             $table->dateTime('created_at');
