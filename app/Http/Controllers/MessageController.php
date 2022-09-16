@@ -14,7 +14,7 @@ class MessageController extends Controller
     public function index(Request $request)
     {
         $messages = Message::query()
-                ->leftjoin('users', 'user_uuid', '=', 'users.uuid')
+                ->join('users', 'user_uuid', '=', 'users.uuid')
                 ->select('messages.uuid', 'name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
                 ->withExists('likes as like_status', fn (Builder $query) =>
                     $query->where('user_uuid', Auth::id())
@@ -37,7 +37,7 @@ class MessageController extends Controller
     {
         // $message = Message::selectRaw('uuid, message, user_uuid, like_count, EXISTS(SELECT * FROM likes WHERE user_uuid=? && message_uuid=uuid) as like_status, created_at', [Auth::id()])->where('uuid', $message_id)->firstOrFail();
         $message = Message::query()
-                ->leftjoin('users', 'user_uuid', '=', 'users.uuid')
+                ->join('users', 'user_uuid', '=', 'users.uuid')
                 ->select('name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
                 ->withExists('likes as like_status', fn (Builder $query) =>
                     $query->where('user_uuid', Auth::id())
