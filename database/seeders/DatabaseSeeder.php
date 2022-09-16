@@ -16,18 +16,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::create([
+        $user = \App\Models\User::create([
             'uuid' => UUID::uuid7(),
             'name' => 'Test User',
             'profile_message' => 'seeder message',
             'hashed_password' => Hash::make('password')
         ]);
         \App\Models\Message::create([
-            'user_uuid' => 'test',
+            'user_uuid' => $user->uuid,
             'message' => 'test message1'
         ]);
         \App\Models\Message::create([
-            'user_uuid' => 'test',
+            'user_uuid' => $user->uuid,
             'message' => 'test message2'
         ]);
     }
