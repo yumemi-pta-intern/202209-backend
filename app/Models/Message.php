@@ -34,7 +34,7 @@ class Message extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class, 'message_uuid');
+        return $this->belongsTo(User::class, 'user_uuid', 'uuid');
     }
     public function likes()
     {
