@@ -35,4 +35,12 @@ class User extends Authenticatable
             $user->uuid = UUID::uuid7();
         });
     }
+
+    /**
+     *  ユーザーのメッセージを取得
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'user_uuid');
+    }
 }
