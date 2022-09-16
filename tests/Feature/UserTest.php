@@ -128,9 +128,9 @@ class UserTest extends TestCase
         $user = User::query()->where('name', 'hogehoge')->first();
 
         // hogehogeユーザーでログイン状態に
-        $response = $this->actingAs($user);
+        $this->actingAs($user);
         // ログアウトを試行
-        $response = $response->post('/api/logout');
+        $response = $this->post('/api/logout');
 
         // 200でありユーザーが認証されていないこと
         $response->assertStatus(200);
