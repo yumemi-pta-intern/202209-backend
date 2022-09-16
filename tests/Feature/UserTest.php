@@ -121,7 +121,7 @@ class UserTest extends TestCase
     public function test_logout()
     {
         // DBにhogehogeユーザーを用意
-        $user = User::factory()->create();
+        $this->seed(UserSeeder::class);
         // hogehogeユーザーでログイン状態に
         $response = $this->actingAs($user);
         // ログアウトを試行
@@ -137,16 +137,11 @@ class UserTest extends TestCase
      */
     public function test_getting_user_info()
     {
-        // uuid生成を固定
-        Str::freezeUuids();
         // DBにhogehogeユーザーを用意
-        $user = User::factory()->create();
+        $this->seed(UserSeeder::class);
         // hogehogeユーザーの情報を取得
         $response = $this->actingAs($user)
                          ->get("/api/user/{$user->uuid}");
-
-        // uuid生成固定を解除
-        Str::createUuidsNormally();
 
         // 200であること
         $response->assertStatus(200);
@@ -159,7 +154,7 @@ class UserTest extends TestCase
     public function test_update_user_profile()
     {
         // DBにhogehogeユーザーを用意
-        $user = User::factory()->create();
+        $this->seed(UserSeeder::class);
 
         $new_name = 'hogehoge';
         $new_profile = 'hogehogehugahuga';
@@ -184,7 +179,7 @@ class UserTest extends TestCase
     public function test_update_user_password()
     {
         // DBにhogehogeユーザーを用意
-        $user = User::factory()->create();
+        $this->seed(UserSeeder::class);
 
         $new_password = 'hogehogehugahuga';
         // パスワード更新を試行
@@ -208,7 +203,7 @@ class UserTest extends TestCase
     public function test_update_user_password_with_invalid_password()
     {
         // DBにhogehogeユーザーを用意
-        $user = User::factory()->create();
+        $this->seed(UserSeeder::class);
 
         $new_password = 'hogehogehugahuga';
         // パスワード更新を誤ったパスワードで試行

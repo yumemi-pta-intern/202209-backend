@@ -20,8 +20,8 @@ class UserFactory extends Factory
     {
         return [
             'uuid' => Str::uuid(),
-            'name' => 'hogehoge',
-            'hashed_password' => Hash::make('hogehoge'), // password
+            'name' => Str::random(30),
+            'hashed_password' => Hash::make(Str::random(30)), // password
         ];
     }
 
