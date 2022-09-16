@@ -51,8 +51,9 @@ class UserTest extends TestCase
             'password' => 'hogehoge',
         ]);
 
-        // 400であること
+        // 400でありユーザーが認証されていないこと
         $response->assertStatus(400);
+        $this->assertGuest();
     }
 
     /**
@@ -92,8 +93,9 @@ class UserTest extends TestCase
             'password' => 'hugahuga',
         ]);
 
-        // 401であること
+        // 401でありユーザーが認証されていないこと
         $response->assertStatus(401);
+        $this->assertGuest();
     }
 
     /**
@@ -109,8 +111,9 @@ class UserTest extends TestCase
             'password' => 'hugahuga',
         ]);
 
-        // 401であること
+        // 401でありユーザーが認証されていないこと
         $response->assertStatus(401);
+        $this->assertGuest();
     }
 
     // 以下はログイン済みであること
