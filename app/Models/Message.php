@@ -32,4 +32,13 @@ class Message extends Model
         });
 	}
 
+    public function users()
+    {
+        return $this->hasMany(User::class, 'message_uuid');
+    }
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'message_uuid');
+    }
+
 }
