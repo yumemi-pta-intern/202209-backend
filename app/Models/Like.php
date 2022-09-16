@@ -13,7 +13,7 @@ class Like extends Model
 
     protected $primaryKey = 'id';
 
-    protected $keyType = 'string';
+    const UPDATED_AT = null;
 
     /**
      * いいねがついているメッセージを取得
