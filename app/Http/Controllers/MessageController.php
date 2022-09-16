@@ -44,4 +44,11 @@ class MessageController extends Controller
                 )->where('messages.uuid', $message_id)->orderByDesc('created_at')->get();
         return response()->json(['status' => Response::HTTP_OK, 'data' => $message]);
     }
+
+    public function updateLikeCount($uuid, $int)
+    {
+        $message = Message::where('uuid', $uuid)->first();
+        $message->like_count = $int;
+        $message->save();
+    }
 }
