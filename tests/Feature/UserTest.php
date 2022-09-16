@@ -122,6 +122,8 @@ class UserTest extends TestCase
     {
         // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
+        $user = User::query()->where('name', 'hogehoge')->first();
+
         // hogehogeユーザーでログイン状態に
         $response = $this->actingAs($user);
         // ログアウトを試行
@@ -139,6 +141,8 @@ class UserTest extends TestCase
     {
         // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
+        $user = User::query()->where('name', 'hogehoge')->first();
+
         // hogehogeユーザーの情報を取得
         $response = $this->actingAs($user)
                          ->get("/api/user/{$user->uuid}");
@@ -155,8 +159,9 @@ class UserTest extends TestCase
     {
         // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
+        $user = User::query()->where('name', 'hogehoge')->first();
 
-        $new_name = 'hogehoge';
+        $new_name = 'hugahuga';
         $new_profile = 'hogehogehugahuga';
         // hogehogeユーザーのプロフを更新
         $response = $this->actingAs($user)
@@ -180,6 +185,7 @@ class UserTest extends TestCase
     {
         // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
+        $user = User::query()->where('name', 'hogehoge')->first();
 
         $new_password = 'hogehogehugahuga';
         // パスワード更新を試行
@@ -204,6 +210,7 @@ class UserTest extends TestCase
     {
         // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
+        $user = User::query()->where('name', 'hogehoge')->first();
 
         $new_password = 'hogehogehugahuga';
         // パスワード更新を誤ったパスワードで試行
