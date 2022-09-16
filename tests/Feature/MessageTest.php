@@ -25,14 +25,15 @@ class MessageTest extends TestCase
     private $user;    
     protected function setUp(): void
     {
-        // userの登録とログイン
+        // userの登録
         parent::setUp();
         $this->user = new User;
-        $this->user->uuid = UUID::uuid7();
         $this->user->name = 'test user';
         $this->user->hashed_password = Hash::make('password');
-        Auth::login($this->user);
         $this->user->save();
+
+        // 登録したuserでログイン
+        Auth::login($this->user);
     }
 
     // 投稿をし、タイムラインを取ってこれるか
@@ -78,6 +79,7 @@ class MessageTest extends TestCase
                     ->where('message', 'test2')
                     ->where('like_count', 0)
                     ->where('like_status', true)
+                    ->where('name', $this->user->name)
                     ->etc()
             )
         );
@@ -97,8 +99,7 @@ class MessageTest extends TestCase
     {
         Auth::shouldReceive('check')->andReturn(false);
         $response = $this->post('/api/message', ['message' => 'test']);
-        $response->assertStatus(400);
-    
+        $response->assertStatus(401);
     }
 
     // showメソッドの確認
