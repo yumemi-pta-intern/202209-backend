@@ -44,7 +44,7 @@ class LikeTest extends TestCase
         ]);
         $message->save();
 
-        // throw api
+        // like 登録API
         $message_uuid = $message['uuid'];
         $response = $this->post("/api/message/${message_uuid}/like");
         $response->assertStatus(200)->assertJson(['status' => Response::HTTP_OK]);
@@ -73,12 +73,12 @@ class LikeTest extends TestCase
         ]);
         $message->save();
 
-        // like 登録APIを叩く
+        // like 登録API
         $message_uuid = $message['uuid'];
         $response = $this->post("/api/message/${message_uuid}/like");
         $response->assertStatus(200)->assertJson(['status' => Response::HTTP_OK]);
 
-        // like 削除APIを叩く
+        // like 削除API
         $message_uuid = $message['uuid'];
         $response = $this->delete("/api/message/${message_uuid}/like");
         $response->assertStatus(200)->assertJson(['status' => Response::HTTP_OK]);
