@@ -7,42 +7,33 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\MessageController;
+use App\Models\Message;
 
 class LikeController extends Controller
 {
 
     public function create(Request $request, $message_uuid)
     {
-        // like の登録
-        $like = new Like;
-        $like->fill([
-            'message_uuid' => $message_uuid,
-            'user_uuid' => Auth::id()
-        ]);
-        $like->save();
-
-        // like が10より少ない時、messageテーブルのlike_countを更新
-        // $int = Like::where('message_uuid', $message_uuid)->count();
-        // if ($int < 10) {
-        //     $called = app()->make('App\Http\Controllers\MessageController');
-        //     $called->updateLikeCount($message_uuid, $int);
-        // }
-        $called = app()->make('App\Http\Controllers\MessageController');
-        $called->countUp($message_uuid);
-
+        $like_doesnt_exist = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->doesntExist();
+        if ($like_doesnt_exist) {
+            // like の登録
+            $like = new Like;
+            $like->fill([
+                'message_uuid' => $message_uuid,
+                'user_uuid' => Auth::id()
+            ]);
+            $like->save();
+            Message::find($message_uuid)->increment('like_count');
+        }
         return response()->json(['status' => Response::HTTP_OK]);
     }
     public function delete(Request $request, $message_uuid)
     {
-        $deleted = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->delete();
-
-        // $int = Like::where('message_uuid', $message_uuid)->count();
-        // if ($int < 10) {
-        //     $called = app()->make('App\Http\Controllers\MessageController');
-        //     $called->updateLikeCount($message_uuid, $int);
-        // }
-        $called = app()->make('App\Http\Controllers\MessageController');
-        $called->countDown($message_uuid);
+        $like_exist = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->exists();
+        if ($like_exist) {
+            $deleted = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->delete();
+            Message::find($message_uuid)->decrement('like_count');
+        }
         return response()->json(['status' => Response::HTTP_OK]);
     }
 }

@@ -36,7 +36,6 @@ class MessageController extends Controller
 
     public function show(Request $request, $message_id)
     {
-        // $this->updateLikeCount($message_id);
         $message = Message::query()
                 ->join('users', 'user_uuid', '=', 'users.uuid')
                 ->select('name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
@@ -44,23 +43,6 @@ class MessageController extends Controller
                     $query->where('user_uuid', Auth::id())
                 )->where('messages.uuid', $message_id)->orderByDesc('created_at')->get();
         return response()->json(['status' => Response::HTTP_OK, 'data' => $message]);
-    }
-
-    public function updateLikeCount($uuid)
-    {
-        $int = Like::where('message_uuid', $uuid)->count();
-        $message = Message::where('uuid', $uuid)->first();
-        $message->like_count = $int;
-        $message->save();
-    }
-
-    public function countUp($uuid)
-    {
-        Message::find($uuid)->increment('like_count');
-    }
-    public function countDown($uuid)
-    {
-        Message::find($uuid)->decrement('like_count');
     }
 
 }
