@@ -24,8 +24,10 @@ class LikeController extends Controller
             ]);
             $like->save();
             Message::find($message_uuid)->increment('like_count');
+            return response()->json(['status' => Response::HTTP_OK]);
+        } else {
+            return response()->json(['status' => Response::HTTP_CONFLICT], Response::HTTP_CONFLICT);
         }
-        return response()->json(['status' => Response::HTTP_OK]);
     }
     public function delete(Request $request, $message_uuid)
     {
@@ -33,7 +35,9 @@ class LikeController extends Controller
         if ($like_exist) {
             $deleted = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->delete();
             Message::find($message_uuid)->decrement('like_count');
+            return response()->json(['status' => Response::HTTP_OK]);
+        } else {
+            return response()->json(['status' => Response::HTTP_CONFLICT], Response::HTTP_CONFLICT);
         }
-        return response()->json(['status' => Response::HTTP_OK]);
     }
 }
