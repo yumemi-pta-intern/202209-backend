@@ -36,7 +36,7 @@ class UserTest extends TestCase
         $this->assertDatabaseHas(User::class, ['name'=>$name]);
         // $nameの人がログインしていること
         $user = User::query()->where('name', $name)->first();
-        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
     }
 
     /**
