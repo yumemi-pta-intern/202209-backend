@@ -24,7 +24,7 @@ class UserController extends Controller
 
         Auth::login($user);
 
-        return response('OK', Response::HTTP_OK);
+        return response('OK.', Response::HTTP_OK);
     }
 
     public function login(Request $request)
@@ -37,7 +37,7 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('timeline');
+            return redirect()->intended('timeline')->with("status", "OK.");
         }
 
         return back()->withErrors([
