@@ -10,6 +10,7 @@ use App\Models\User;
 use Database\Seeders\UserSeeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserTest extends TestCase
 {
@@ -29,7 +30,7 @@ class UserTest extends TestCase
         ]);
 
         // 200とcookieでセッションIDが返ってきていること
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertCookie('laravel_session');
         // $nameの人がDBにあること
         $this->assertDatabaseHas(User::class, ['name'=>$name]);
@@ -52,8 +53,8 @@ class UserTest extends TestCase
             'password' => 'hogehoge',
         ]);
 
-        // 400でありユーザーが認証されていないこと
-        $response->assertStatus(400);
+        // 302でありユーザーが認証されていないこと
+        $response->assertStatus(Response::HTTP_FOUND);
         $this->assertGuest();
     }
 
@@ -74,7 +75,7 @@ class UserTest extends TestCase
         ]);
 
         // 200とcookieでセッションIDが返ってきていること
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertCookie('laravel_session');
         // $nameの人がログインしていること
         $user = User::query()->where('name', $name)->first();
@@ -88,14 +89,15 @@ class UserTest extends TestCase
     {
         // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
+
         // DBに誤ったpwでログイン試行
         $response = $this->post('/api/login', [
             'name' => 'hogehoge',
             'password' => 'hugahuga',
         ]);
 
-        // 401でありユーザーが認証されていないこと
-        $response->assertStatus(401);
+        // 302でありユーザーが認証されていないこと
+        $response->assertStatus(Response::HTTP_FOUND);
         $this->assertGuest();
     }
 
@@ -106,14 +108,15 @@ class UserTest extends TestCase
     {
         // DBにhogehogeユーザーを用意
         $this->seed(UserSeeder::class);
+
         // DBに登録していないhugahugaユーザーでログイン試行
         $response = $this->post('/api/login', [
             'name' => 'hugahuga',
             'password' => 'hugahuga',
         ]);
 
-        // 401でありユーザーが認証されていないこと
-        $response->assertStatus(401);
+        // 302でありユーザーが認証されていないこと
+        $response->assertStatus(Response::HTTP_FOUND);
         $this->assertGuest();
     }
 
@@ -134,7 +137,7 @@ class UserTest extends TestCase
         $response = $this->post('/api/logout');
 
         // 200でありユーザーが認証されていないこと
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
         $this->assertGuest();
     }
     
@@ -155,7 +158,7 @@ class UserTest extends TestCase
     //     dump($user->uuid);
     //     $message = Message::factory()->make();
     //     $message->user_uuid = $user->uuid;
-    //     $message->create();
+    //     $message->save();
 
     //     dump($message);
     //     dd($user);
@@ -165,7 +168,7 @@ class UserTest extends TestCase
     //                      ->get("/api/user/{$user->uuid}");
 
     //     // 200であること
-    //     $response->assertStatus(200);
+    //     $response->assertStatus(Response::HTTP_OK);
     //     // TODO: 正しいname, user_profile, messagesなどが返ってきていること
     //     // {
     //     //     "status": 200,
@@ -194,9 +197,9 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
         $user = User::query()->where('name', 'hogehoge')->first();
 
+        // hogehogeユーザーのプロフを更新
         $new_name = 'hugahuga';
         $new_profile = 'hogehogehugahuga';
-        // hogehogeユーザーのプロフを更新
         $response = $this->actingAs($user)
                          ->put("/api/user/profile", [
                             'name' => $new_name,
@@ -204,7 +207,7 @@ class UserTest extends TestCase
                          ]);
 
         // 200であること
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
         // DBに保存されていること
         $this->assertDatabaseHas(User::class, [
             'name' => $new_name, 'profile' => $new_profile
@@ -220,8 +223,8 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
         $user = User::query()->where('name', 'hogehoge')->first();
 
-        $new_password = 'hogehogehugahuga';
         // パスワード更新を試行
+        $new_password = 'hogehogehugahuga';
         $response = $this->actingAs($user)
                          ->put("/api/user/profile", [
                             'old_password' => $user->password,
@@ -229,7 +232,7 @@ class UserTest extends TestCase
                          ]);
 
         // 200であること
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
         // DBに保存されていること
         $this->assertDatabaseHas(User::class, [
             'name' => $user->name, 'hashed_password' => Hash::make($new_password)
@@ -245,15 +248,15 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
         $user = User::query()->where('name', 'hogehoge')->first();
 
-        $new_password = 'hogehogehugahuga';
         // パスワード更新を誤ったパスワードで試行
+        $new_password = 'hogehogehugahuga';
         $response = $this->actingAs($user)
                          ->put("/api/user/profile", [
                             'old_password' => 'invalid_pw',
                             'new_password' => $new_password,
                          ]);
 
-        // 401であること
-        $response->assertStatus(401);
+        // 302であること
+        $response->assertStatus(Response::HTTP_FOUND);
     }
 }
