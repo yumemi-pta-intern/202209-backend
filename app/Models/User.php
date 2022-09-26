@@ -18,7 +18,7 @@ class User extends Authenticatable
     protected $guarded = [];
 
     protected $hidden = [
-        'hashed_password',
+        'password',
     ];
 
     protected $primaryKey = 'uuid';

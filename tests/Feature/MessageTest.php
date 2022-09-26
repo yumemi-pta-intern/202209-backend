@@ -29,7 +29,7 @@ class MessageTest extends TestCase
         parent::setUp();
         $this->user = new User;
         $this->user->name = 'test user';
-        $this->user->hashed_password = Hash::make('password');
+        $this->user->password = Hash::make('password');
         $this->user->save();
 
         // 登録したuserでログイン

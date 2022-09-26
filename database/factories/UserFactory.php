@@ -24,7 +24,7 @@ class UserFactory extends Factory
         return [
             'uuid' => Str::uuid(),
             'name' => Str::random(30),
-            'hashed_password' => Hash::make(Str::random(30)), // password
+            'password' => Hash::make(Str::random(30)), // password
         ];
     }
 

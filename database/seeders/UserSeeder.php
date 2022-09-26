@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
     {
         User::query()->create([
             'name' => 'hogehoge',
-            'hashed_password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge'),
         ]);
     }
 }
