@@ -32,13 +32,13 @@ class LikeTest extends TestCase
         // user 作成
         $this->user = new User();
         $this->user->name = 'test user';
-        $this->user->hashed_password = Hash::make('password');
+        $this->user->password = Hash::make('password');
         $this->user->save();
 
         // user2 作成
         $this->user2 = new User();
         $this->user2->name = 'test user2';
-        $this->user2->hashed_password = Hash::make('password');
+        $this->user2->password = Hash::make('password');
         $this->user2->save();
 
         Auth::login($this->user);
