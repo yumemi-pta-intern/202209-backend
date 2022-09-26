@@ -26,5 +26,5 @@ Route::get('/timeline', [MessageController::class, 'index']);
 Route::post('/message', [MessageController::class, 'create']);
 Route::get('/message/{message_id}', [MessageController::class, 'show']);
 
-Route::post('/message/{message_id}/like', [LikeController::class, 'create']);
-Route::delete('/message/{message_id}/like', [LikeController::class, 'delete']);
+Route::post('/message/{message_id}/like', [MessageController::class, 'like']);
+Route::delete('/message/{message_id}/like', [MessageController::class, 'delete_like']);
