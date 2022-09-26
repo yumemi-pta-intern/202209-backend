@@ -37,7 +37,7 @@ class LikeTest extends TestCase
 
     public function test_like_create()
     {
-        // message create
+        // message 作成
         $message = new Message;
         $message->fill([
             'message' => 'test message',
@@ -97,4 +97,39 @@ class LikeTest extends TestCase
             )
         );   
     }
+
+    public function test_like_create_double()
+    {
+        // message 作成
+        $message = new Message;
+        $message->fill([
+            'message' => 'test message',
+        ]);
+        $message->save();
+
+        // like 登録API
+        $message_uuid = $message['uuid'];
+        $response = $this->post("/api/message/${message_uuid}/like");
+        $response->assertStatus(200)->assertJson(['status' => Response::HTTP_OK]);
+
+        $message_uuid = $message['uuid'];
+        $response = $this->post("/api/message/${message_uuid}/like");
+        $response->assertStatus(409);
+    }
+
+    public function test_like_null_delete()
+    {
+        // message 作成
+        $message = new Message;
+        $message->fill([
+            'message' => 'test message',
+        ]);
+        $message->save();
+
+        // like 削除API
+        $message_uuid = $message['uuid'];
+        $response = $this->delete("/api/message/${message_uuid}/like");
+        $response->assertStatus(409);
+    }
+
 }
