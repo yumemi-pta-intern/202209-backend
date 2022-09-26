@@ -36,7 +36,7 @@ class UserTest extends TestCase
         $this->assertDatabaseHas(User::class, ['name'=>$name]);
         // $nameの人がログインしていること
         $user = User::query()->where('name', $name)->first();
-        $this->assertAuthenticatedAs($user);
+        $this->assertAuthenticated();
     }
 
     /**
@@ -74,8 +74,8 @@ class UserTest extends TestCase
             'password' => 'hogehoge',
         ]);
 
-        // 200とcookieでセッションIDが返ってきていること
-        $response->assertStatus(Response::HTTP_OK);
+        // 302とcookieでセッションIDが返ってきていること
+        $response->assertStatus(Response::HTTP_FOUND);
         $response->assertCookie('laravel_session');
         // $nameの人がログインしていること
         $user = User::query()->where('name', $name)->first();
@@ -136,8 +136,8 @@ class UserTest extends TestCase
         // ログアウトを試行
         $response = $this->post('/api/logout');
 
-        // 200でありユーザーが認証されていないこと
-        $response->assertStatus(Response::HTTP_OK);
+        // 302でありユーザーが認証されていないこと
+        $response->assertStatus(Response::HTTP_FOUND);
         $this->assertGuest();
     }
     
