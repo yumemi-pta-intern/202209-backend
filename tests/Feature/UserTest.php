@@ -29,9 +29,8 @@ class UserTest extends TestCase
             'password' => 'hogehoge',
         ]);
 
-        // 200とcookieでセッションIDが返ってきていること
+        // 200が返ってきていること
         $response->assertStatus(Response::HTTP_OK);
-        $response->assertCookie('laravel_session');
         // $nameの人がDBにあること
         $this->assertDatabaseHas(User::class, ['name'=>$name]);
         // $nameの人がログインしていること
@@ -74,9 +73,8 @@ class UserTest extends TestCase
             'password' => 'hogehoge',
         ]);
 
-        // 302とcookieでセッションIDが返ってきていること
+        // 302が返ってきていること
         $response->assertStatus(Response::HTTP_FOUND);
-        $response->assertCookie('laravel_session');
         // $nameの人がログインしていること
         $user = User::query()->where('name', $name)->first();
         $this->assertAuthenticatedAs($user);
