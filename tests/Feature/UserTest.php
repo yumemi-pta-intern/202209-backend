@@ -24,7 +24,7 @@ class UserTest extends TestCase
         $name = 'hogehoge';
 
         // アカウント登録
-        $response = $this->post('/api/signup', [
+        $response = $this->postJson('/api/signup', [
             'name' => $name,
             'password' => 'hogehoge',
         ]);
@@ -47,13 +47,13 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
 
         // nameを重複させてアカウント登録
-        $response = $this->post('/api/signup', [
+        $response = $this->postJson('/api/signup', [
             'name' => 'hogehoge',
             'password' => 'hogehoge',
         ]);
 
-        // 302でありユーザーが認証されていないこと
-        $response->assertStatus(Response::HTTP_FOUND);
+        // 422でありユーザーが認証されていないこと
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertGuest();
     }
 
@@ -68,13 +68,13 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
 
         // hogehogeでログイン試行
-        $response = $this->post('/api/login', [
+        $response = $this->postJson('/api/login', [
             'name' => $name,
             'password' => 'hogehoge',
         ]);
 
-        // 302が返ってきていること
-        $response->assertStatus(Response::HTTP_FOUND);
+        // 200が返ってきていること
+        $response->assertStatus(Response::HTTP_OK);
         // $nameの人がログインしていること
         $user = User::query()->where('name', $name)->first();
         $this->assertAuthenticatedAs($user);
@@ -89,13 +89,13 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
 
         // DBに誤ったpwでログイン試行
-        $response = $this->post('/api/login', [
+        $response = $this->postJson('/api/login', [
             'name' => 'hogehoge',
             'password' => 'hugahuga',
         ]);
 
-        // 302でありユーザーが認証されていないこと
-        $response->assertStatus(Response::HTTP_FOUND);
+        // 422でありユーザーが認証されていないこと
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertGuest();
     }
 
@@ -108,13 +108,13 @@ class UserTest extends TestCase
         $this->seed(UserSeeder::class);
 
         // DBに登録していないhugahugaユーザーでログイン試行
-        $response = $this->post('/api/login', [
+        $response = $this->postJson('/api/login', [
             'name' => 'hugahuga',
             'password' => 'hugahuga',
         ]);
 
-        // 302でありユーザーが認証されていないこと
-        $response->assertStatus(Response::HTTP_FOUND);
+        // 422でありユーザーが認証されていないこと
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertGuest();
     }
 
@@ -132,10 +132,10 @@ class UserTest extends TestCase
         // hogehogeユーザーでログイン状態に
         $this->actingAs($user);
         // ログアウトを試行
-        $response = $this->post('/api/logout');
+        $response = $this->postJson('/api/logout');
 
-        // 302でありユーザーが認証されていないこと
-        $response->assertStatus(Response::HTTP_FOUND);
+        // 200が返ってきていて、ユーザーが認証されていないこと
+        $response->assertStatus(Response::HTTP_OK);
         $this->assertGuest();
     }
     
@@ -202,8 +202,8 @@ class UserTest extends TestCase
                             'name' => $new_name,
                          ]);
 
-        // 302であること
-        $response->assertStatus(Response::HTTP_FOUND);
+        // 200が返ってきていること
+        $response->assertStatus(Response::HTTP_OK);
         // DBに保存されていること
         $this->assertDatabaseHas(User::class, [
             'name' => $new_name
@@ -226,8 +226,8 @@ class UserTest extends TestCase
                             'profile' => $new_profile,
                          ]);
 
-        // 302であること
-        $response->assertStatus(Response::HTTP_FOUND);
+        // 200が返ってきていること
+        $response->assertStatus(Response::HTTP_OK);
         // DBに保存されていること
         $this->assertDatabaseHas(User::class, [
             'name' => 'hogehoge', 'profile_message' => $new_profile
@@ -251,8 +251,8 @@ class UserTest extends TestCase
                             'new_password' => $new_password,
                          ]);
 
-        // 302であること
-        $response->assertStatus(Response::HTTP_FOUND);
+        // 200が返ってきていること
+        $response->assertStatus(Response::HTTP_OK);
         // DBに保存されていること
         $user = User::query()->where('name', 'hogehoge')->first();
         dump('in test:' . $new_password);
@@ -279,7 +279,7 @@ class UserTest extends TestCase
                             'new_password' => $new_password,
                          ]);
 
-        // 302であること
-        $response->assertStatus(Response::HTTP_FOUND);
+        // 422であること
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
