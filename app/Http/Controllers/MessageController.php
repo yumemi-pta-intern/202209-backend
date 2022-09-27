@@ -49,14 +49,8 @@ class MessageController extends Controller
     {
         $like_doesnt_exist = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->doesntExist();
         if ($like_doesnt_exist) {
-            // like の登録
-            $like = new Like;
-            $like->fill([
-                'message_uuid' => $message_uuid,
-                'user_uuid' => Auth::id()
-            ]);
-            DB::transaction(function () use ($like, $message_uuid) {
-                $like->save();
+            DB::transaction(function () use ($message_uuid) {
+                Message::like($message_uuid);
                 Message::find($message_uuid)->increment('like_count');
             });
         }
@@ -68,7 +62,7 @@ class MessageController extends Controller
         $like_exist = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->exists();
         if ($like_exist) {
             DB::transaction(function () use ($message_uuid) {
-                $deleted = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->delete();
+                Message::delete_like($message_uuid);
                 Message::find($message_uuid)->decrement('like_count');
             });
         }

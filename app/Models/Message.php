@@ -28,7 +28,6 @@ class Message extends Model
 	    self::creating(function (Message $message) {
             $message->uuid = UUID::uuid7();
             $message->user_uuid = Auth::id();
-            // $message->user_uuid = 'test';
         });
 	}
 
@@ -39,6 +38,21 @@ class Message extends Model
     public function likes()
     {
         return $this->hasMany(Like::class, 'message_uuid');
+    }
+
+    public static function like($message_uuid)
+    {
+        $like = new Like;
+        $like->fill([
+            'message_uuid' => $message_uuid,
+            'user_uuid' => Auth::id()
+        ]);
+        $like->save();
+    }
+
+    public static function delete_like($message_uuid)
+    {
+        Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->delete();
     }
 
 }
