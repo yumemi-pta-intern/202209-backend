@@ -84,7 +84,7 @@ class UserController extends Controller
             'profile' => 'string',
         ]);
 
-        $user = User::query()->where('name', auth()->user()->name)->firstOrFail();
+        $user = User::query()->where('uuid', auth()->user()->uuid)->firstOrFail();
 
         if (!isNull($request->input('name'))) {
             $user->name = $request->input('name');
@@ -102,7 +102,7 @@ class UserController extends Controller
             'new_password' => 'required|string',
         ]);
 
-        $user = User::query()->where('name', auth()->user()->name)->firstOrFail();
+        $user = User::query()->where('uuid', auth()->user()->uuid)->firstOrFail();
 
         if(!Hash::check($request->old_password, $user->password)){
             return back()->with("error", "Old password doesn't match.");
