@@ -210,7 +210,7 @@ class UserTest extends TestCase
         // パスワード更新を試行
         $new_password = 'hogehogehugahuga';
         $response = $this->actingAs($user)
-                         ->put("/api/user/profile", [
+                         ->put("/api/user/password", [
                             'old_password' => 'hogehoge',
                             'new_password' => $new_password,
                          ]);
@@ -236,12 +236,15 @@ class UserTest extends TestCase
         // パスワード更新を誤ったパスワードで試行
         $new_password = 'hogehogehugahuga';
         $response = $this->actingAs($user)
-                         ->put("/api/user/profile", [
+                         ->put("/api/user/password", [
                             'old_password' => 'invalid_pw',
                             'new_password' => $new_password,
                          ]);
 
         // 422であること
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        // DBに保存されているパスワードが別であること
+        $user->refresh();
+        $this->assertFalse(Hash::check($new_password, $user->password));
     }
 }

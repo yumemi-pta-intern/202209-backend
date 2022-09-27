@@ -92,7 +92,7 @@ class UserController extends Controller
 
         $user = User::query()->where('uuid', auth()->user()->uuid)->firstOrFail();
 
-        if (!isNull($request->input('name'))) {
+        if (!is_null($request->input('name'))) {
             $user->name = $request->input('name');
         }
         $user->profile_message = $request->input('profile');
@@ -113,7 +113,9 @@ class UserController extends Controller
         $user = User::query()->where('uuid', auth()->user()->uuid)->firstOrFail();
 
         if(!Hash::check($request->old_password, $user->password)){
-            return back()->with("error", "Old password doesn't match.");
+            return response()->json([
+                "error" => "Old password doesn't match."
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $user->password = Hash::make($request->input('new_password'));
