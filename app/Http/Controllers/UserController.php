@@ -27,7 +27,9 @@ class UserController extends Controller
 
         Auth::login($user);
 
-        return response('OK.', Response::HTTP_OK);
+        return response()->json([
+            'status' => 'OK.',
+        ], Response::HTTP_OK);
     }
 
     public function login(Request $request)
@@ -40,12 +42,14 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('timeline')->with("status", "OK.");
+            return response()->json([
+                'status' => 'OK.',
+            ], Response::HTTP_OK);
         }
 
-        return back()->withErrors([
-            'name' => 'The provided credentials do not match our records.',
-        ])->onlyInput('name');
+        return response()->json([
+            'status' => 'Error.',
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function logout(Request $request)
@@ -56,7 +60,9 @@ class UserController extends Controller
     
         $request->session()->regenerateToken();
     
-        return redirect('/');
+        return response()->json([
+            'status' => 'OK.',
+        ], Response::HTTP_OK);
     }
 
     public function getProfile(string $user_id)
@@ -66,7 +72,7 @@ class UserController extends Controller
                             ->select('messages.uuid', 'name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
                             ->withExists('likes as like_status', fn (Builder $query) =>
                                 $query->where('user_uuid', $user_id)
-                            )->orderByDesc('created_at')->limit(100)->get();
+                            )->orderByDesc('created_at')->limit(100)->get()->toArray();
 
         return response()->json([
             'status' => 'OK.',
@@ -92,7 +98,9 @@ class UserController extends Controller
         $user->profile_message = $request->input('profile');
         $user->save();
 
-        return back()->with("status", "Changed.");
+        return response()->json([
+            'status' => 'Changed.',
+        ], Response::HTTP_OK);
     }
 
     public function updatePassword(Request $request)
@@ -111,6 +119,8 @@ class UserController extends Controller
         $user->password = Hash::make($request->input('new_password'));
         $user->save();
 
-        return back()->with("status", "Changed.");
+        return response()->json([
+            'status' => 'Changed.',
+        ], Response::HTTP_OK);
     }
 }
