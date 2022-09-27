@@ -167,9 +167,8 @@ class UserTest extends TestCase
         // 200が返ってきていること
         $response->assertStatus(Response::HTTP_OK);
         // DBに保存されていること
-        $this->assertDatabaseHas(User::class, [
-            'name' => $new_name
-        ]);
+        $user->refresh();
+        $this->assertEquals($new_name, $user->name);
     }
 
     /**
@@ -193,9 +192,8 @@ class UserTest extends TestCase
         // 200が返ってきていること
         $response->assertStatus(Response::HTTP_OK);
         // DBに保存されていること
-        $this->assertDatabaseHas(User::class, [
-            'name' => 'hogehoge', 'profile_message' => $new_profile
-        ]);
+        $user->refresh();
+        $this->assertEquals($new_profile, $user->profile_message);
     }
 
     /**
@@ -220,11 +218,7 @@ class UserTest extends TestCase
         // 200が返ってきていること
         $response->assertStatus(Response::HTTP_OK);
         // DBに保存されていること
-        $user = User::query()->where('name', 'hogehoge')->first();
-        dump('in test:' . $new_password);
-        $this->assertDatabaseHas(User::class, [
-            'name' => $user->name
-        ]);
+        $user->refresh();
         $this->assertTrue(Hash::check($new_password, $user->password));
     }
 
