@@ -2,13 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\Message;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
-use Database\Seeders\UserSeeder;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -21,20 +17,18 @@ class UserTest extends TestCase
      */
     public function test_making_account()
     {
-        $name = 'hogehoge';
-
         // アカウント登録
         $response = $this->postJson('/api/signup', [
-            'name' => $name,
+            'name' => 'hogehoge',
             'password' => 'hogehoge',
         ]);
 
         // 200が返ってきていること
         $response->assertStatus(Response::HTTP_OK);
         // $nameの人がDBにあること
-        $this->assertDatabaseHas(User::class, ['name'=>$name]);
+        $this->assertDatabaseHas(User::class, ['name'=>'hogehoge']);
         // $nameの人がログインしていること
-        $user = User::query()->where('name', $name)->first();
+        $user = User::query()->where('name', 'hogehoge')->first();
         $this->assertAuthenticatedAs($user);
     }
 
@@ -44,12 +38,15 @@ class UserTest extends TestCase
     public function test_making_account_with_same_id()
     {
         // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
+        User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
 
         // nameを重複させてアカウント登録
         $response = $this->postJson('/api/signup', [
             'name' => 'hogehoge',
-            'password' => 'hogehoge',
+            'password' => 'hugahuga',
         ]);
 
         // 422でありユーザーが認証されていないこと
@@ -62,21 +59,23 @@ class UserTest extends TestCase
      */
     public function test_login_with_valid_account()
     {
-        $name = 'hogehoge';
-        
+       
         // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
+        User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
 
         // hogehogeでログイン試行
         $response = $this->postJson('/api/login', [
-            'name' => $name,
+            'name' => 'hogehoge',
             'password' => 'hogehoge',
         ]);
 
         // 200が返ってきていること
         $response->assertStatus(Response::HTTP_OK);
         // $nameの人がログインしていること
-        $user = User::query()->where('name', $name)->first();
+        $user = User::query()->where('name', 'hogehoge')->first();
         $this->assertAuthenticatedAs($user);
     }
 
@@ -86,7 +85,10 @@ class UserTest extends TestCase
     public function test_login_with_invalid_password()
     {
         // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
+        User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
 
         // DBに誤ったpwでログイン試行
         $response = $this->postJson('/api/login', [
@@ -105,7 +107,10 @@ class UserTest extends TestCase
     public function test_login_with_invalid_account()
     {
         // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
+        User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
 
         // DBに登録していないhugahugaユーザーでログイン試行
         $response = $this->postJson('/api/login', [
@@ -126,8 +131,10 @@ class UserTest extends TestCase
     public function test_logout()
     {
         // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
-        $user = User::query()->where('name', 'hogehoge')->first();
+        $user = User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
 
         // hogehogeユーザーでログイン状態に
         $this->actingAs($user);
@@ -145,8 +152,10 @@ class UserTest extends TestCase
     public function test_update_user_name()
     {
         // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
-        $user = User::query()->where('name', 'hogehoge')->first();
+        $user = User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
 
         // hogehogeユーザーの名前を更新
         $new_name = 'hugahuga';
@@ -169,8 +178,10 @@ class UserTest extends TestCase
     public function test_update_user_profile()
     {
         // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
-        $user = User::query()->where('name', 'hogehoge')->first();
+        $user = User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
 
         // hogehogeユーザーのプロフを更新
         $new_profile = 'hogehogehugahuga';
@@ -193,14 +204,16 @@ class UserTest extends TestCase
     public function test_update_user_password()
     {
         // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
-        $user = User::query()->where('name', 'hogehoge')->first();
+        $user = User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
 
         // パスワード更新を試行
         $new_password = 'hogehogehugahuga';
         $response = $this->actingAs($user)
                          ->put("/api/user/profile", [
-                            'old_password' => $user->password,
+                            'old_password' => 'hogehoge',
                             'new_password' => $new_password,
                          ]);
 
@@ -221,8 +234,10 @@ class UserTest extends TestCase
     public function test_update_user_password_with_invalid_password()
     {
         // DBにhogehogeユーザーを用意
-        $this->seed(UserSeeder::class);
-        $user = User::query()->where('name', 'hogehoge')->first();
+        $user = User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
 
         // パスワード更新を誤ったパスワードで試行
         $new_password = 'hogehogehugahuga';
