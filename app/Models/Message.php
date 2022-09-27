@@ -40,19 +40,22 @@ class Message extends Model
         return $this->hasMany(Like::class, 'message_uuid');
     }
 
-    public static function like($message_uuid)
+    public function like(string $like_user_uuid)
     {
-        $like = new Like;
-        $like->fill([
-            'message_uuid' => $message_uuid,
-            'user_uuid' => Auth::id()
-        ]);
-        $like->save();
+        $already_liked = $this->likes()->where('user_uuid', $like_user_uuid)->exists();
+        if (!$already_liked) {
+            $this->likes()->create(['user_uuid' => $like_user_uuid]);
+            $this->increment('like_count');
+        }
     }
 
-    public static function delete_like($message_uuid)
+    public function delete_like(string $like_user_uuid)
     {
-        Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->delete();
+        $already_liked =  $this->likes()->where('user_uuid', $like_user_uuid)->exists();
+        if ($already_liked) {
+            $this->likes()->where('user_uuid', $like_user_uuid)->first()->delete();
+            $this->decrement('like_count');
+        }
     }
 
 }
