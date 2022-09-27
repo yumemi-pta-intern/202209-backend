@@ -47,25 +47,21 @@ class MessageController extends Controller
 
     public function like(Request $request, $message_uuid)
     {
-        $like_doesnt_exist = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->doesntExist();
-        if ($like_doesnt_exist) {
-            DB::transaction(function () use ($message_uuid) {
-                Message::like($message_uuid);
-                Message::find($message_uuid)->increment('like_count');
-            });
-        }
+        DB::transaction(function () use ($message_uuid) {
+            $message = Message::find($message_uuid);
+            $message->like(Auth::id());
+        });
+        
         return response()->json(['status' => Response::HTTP_OK]);
     }
 
     public function delete_like(Request $request, $message_uuid)
     {
-        $like_exist = Like::where([['message_uuid', $message_uuid], ['user_uuid', Auth::id()]])->exists();
-        if ($like_exist) {
-            DB::transaction(function () use ($message_uuid) {
-                Message::delete_like($message_uuid);
-                Message::find($message_uuid)->decrement('like_count');
-            });
-        }
+        DB::transaction(function () use ($message_uuid) {
+            $message = Message::find($message_uuid);
+            $message->delete_like(Auth::id());
+        });
+    
         return response()->json([], Response::HTTP_NO_CONTENT);
     }    
 }
