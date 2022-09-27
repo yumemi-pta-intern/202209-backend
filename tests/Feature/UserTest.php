@@ -149,11 +149,11 @@ class UserTest extends TestCase
     //     // DBにhogehogeユーザーを用意
     //     // $user = User::factory()->has(Message::factory()->count(5))->create([
     //     //     'name' => 'hogehoge',
-    //     //     'hashed_password' => Hash::make('hogehoge'),
+    //     //     'password' => Hash::make('hogehoge'),
     //     // ]);
     //     $user = User::factory()->create([
     //         'name' => 'hogehoge',
-    //         'hashed_password' => Hash::make('hogehoge'),
+    //         'password' => Hash::make('hogehoge'),
     //     ]);
     //     dump($user->uuid);
     //     $message = Message::factory()->make();
@@ -253,12 +253,15 @@ class UserTest extends TestCase
                             'new_password' => $new_password,
                          ]);
 
-        // 200であること
-        $response->assertStatus(Response::HTTP_OK);
+        // 302であること
+        $response->assertStatus(Response::HTTP_FOUND);
         // DBに保存されていること
+        $user = User::query()->where('name', 'hogehoge')->first();
+        dump('in test:' . $new_password);
         $this->assertDatabaseHas(User::class, [
-            'name' => $user->name, 'hashed_password' => Hash::make($new_password)
+            'name' => $user->name
         ]);
+        $this->assertTrue(Hash::check($new_password, $user->password));
     }
 
     /**
