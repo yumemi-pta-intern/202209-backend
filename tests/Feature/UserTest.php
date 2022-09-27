@@ -138,53 +138,6 @@ class UserTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
         $this->assertGuest();
     }
-    
-    /**
-     * ユーザー情報を取得
-     */
-    // public function test_getting_user_info()
-    // {
-    //     // DBにhogehogeユーザーを用意
-    //     // $user = User::factory()->has(Message::factory()->count(5))->create([
-    //     //     'name' => 'hogehoge',
-    //     //     'password' => Hash::make('hogehoge'),
-    //     // ]);
-    //     $user = User::factory()->create([
-    //         'name' => 'hogehoge',
-    //         'password' => Hash::make('hogehoge'),
-    //     ]);
-    //     dump($user->uuid);
-    //     $message = Message::factory()->make();
-    //     $message->user_uuid = $user->uuid;
-    //     $message->save();
-
-    //     dump($message);
-    //     dd($user);
-
-    //     // hogehogeユーザーの情報を取得
-    //     $response = $this->actingAs($user)
-    //                      ->get("/api/user/{$user->uuid}");
-
-    //     // 200であること
-    //     $response->assertStatus(Response::HTTP_OK);
-    //     // TODO: 正しいname, user_profile, messagesなどが返ってきていること
-    //     // {
-    //     //     "status": 200,
-    //     //     "data": [
-    //     //         {
-    //     //             "name": 名前,
-    //     //             "messages": [
-    //     //                 {
-    //     //                     "user_uuid": 投稿ユーザーのuuid,
-    //     //                     "message": 本文,
-    //     //                     "like_count": 0,
-    //     //                     "like_status": bool,
-    //     //                 },
-    //     //             ]
-    //     //         },
-    //     //     ]
-    //     // }
-    // }
 
     /**
      * ユーザーの名前を更新
