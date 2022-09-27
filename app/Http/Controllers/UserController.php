@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use function PHPUnit\Framework\isNull;
 
 class UserController extends Controller
 {
@@ -85,7 +86,9 @@ class UserController extends Controller
 
         $user = User::query()->where('name', auth()->user()->name)->firstOrFail();
 
-        $user->name = $request->input('name');
+        if (!isNull($request->input('name'))) {
+            $user->name = $request->input('name');
+        }
         $user->profile_message = $request->input('profile');
         $user->save();
 
