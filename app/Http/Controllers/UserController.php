@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Contracts\Database\Eloquent\Builder;
-use function PHPUnit\Framework\isNull;
 
 class UserController extends Controller
 {
@@ -63,6 +62,16 @@ class UserController extends Controller
         return response()->json([
             'status' => 'OK.',
         ], Response::HTTP_OK);
+    }
+
+    public function getMe()
+    {
+        return response()->json([
+            'status' => 'OK.',
+            'data' => [
+                'uuid' => auth()->user()->uuid,
+            ],
+        ]);
     }
 
     public function getProfile(string $user_id)

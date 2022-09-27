@@ -147,6 +147,30 @@ class UserTest extends TestCase
     }
 
     /**
+     * 自身のuuidを取得
+     */
+    public function test_get_my_uuid()
+    {
+        // DBにhogehogeユーザーを用意
+        $user = User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+        ]);
+
+        // hogehogeユーザーでログイン状態にして、meにアクセス
+        $response = $this->actingAs($user)->getJson('/api/user/me');
+
+        // 200が返ってきていて、uuidが取得できること
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertExactJson([
+            'status' => 'OK.',
+            'data' => [
+                'uuid' => $user->uuid,
+            ]
+        ]);
+    }
+
+    /**
      * ユーザーの名前を更新
      */
     public function test_update_user_name()
