@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'uuid' => UUID::uuid7(),
             'name' => 'Test User',
             'profile_message' => 'seeder message',
-            'hashed_password' => Hash::make('password')
+            'password' => Hash::make('password')
         ]);
         \App\Models\Message::create([
             'user_uuid' => $user->uuid,
