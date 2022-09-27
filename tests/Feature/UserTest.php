@@ -189,7 +189,31 @@ class UserTest extends TestCase
     // }
 
     /**
-     * ユーザー情報を更新
+     * ユーザーの名前を更新
+     */
+    public function test_update_user_name()
+    {
+        // DBにhogehogeユーザーを用意
+        $this->seed(UserSeeder::class);
+        $user = User::query()->where('name', 'hogehoge')->first();
+
+        // hogehogeユーザーの名前を更新
+        $new_name = 'hugahuga';
+        $response = $this->actingAs($user)
+                         ->put("/api/user/profile", [
+                            'name' => $new_name,
+                         ]);
+
+        // 302であること
+        $response->assertStatus(Response::HTTP_FOUND);
+        // DBに保存されていること
+        $this->assertDatabaseHas(User::class, [
+            'name' => $new_name
+        ]);
+    }
+
+    /**
+     * ユーザーのプロフを更新
      */
     public function test_update_user_profile()
     {
@@ -198,19 +222,17 @@ class UserTest extends TestCase
         $user = User::query()->where('name', 'hogehoge')->first();
 
         // hogehogeユーザーのプロフを更新
-        $new_name = 'hugahuga';
         $new_profile = 'hogehogehugahuga';
         $response = $this->actingAs($user)
                          ->put("/api/user/profile", [
-                            'name' => $new_name,
                             'profile' => $new_profile,
                          ]);
 
-        // 200であること
-        $response->assertStatus(Response::HTTP_OK);
+        // 302であること
+        $response->assertStatus(Response::HTTP_FOUND);
         // DBに保存されていること
         $this->assertDatabaseHas(User::class, [
-            'name' => $new_name, 'profile' => $new_profile
+            'name' => 'hogehoge', 'profile_message' => $new_profile
         ]);
     }
 
