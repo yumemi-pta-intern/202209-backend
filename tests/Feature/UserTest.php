@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Models\Message;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
+
+use App\Models\User;
+use App\Models\Message;
+use App\Models\Like;
 
 class UserTest extends TestCase
 {
@@ -192,6 +195,11 @@ class UserTest extends TestCase
             'message' => "2 test message 2."
         ]);
 
+        $like = Like::query()->create([
+            'user_uuid' => $user->uuid,
+            'message_uuid' => $message2->uuid
+        ]);
+
         // hogehogeユーザーでログイン状態にして、自身のプロフィールににアクセス
         $response = $this->actingAs($user)->getJson('/api/user/' . $user->uuid);
 
@@ -217,7 +225,7 @@ class UserTest extends TestCase
                         'user_uuid' => $message2->user_uuid,
                         'message' => $message2->message,
                         'like_count' => $message2->like_count,
-                        'like_status' => false,
+                        'like_status' => true,
                         'created_at' => $message2->created_at,
                     ],
                 ],
