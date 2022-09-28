@@ -80,7 +80,7 @@ class UserController extends Controller
                             ->join('users', 'user_uuid', '=', 'users.uuid')
                             ->select('messages.uuid', 'name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
                             ->withExists('likes as like_status', fn (Builder $query) =>
-                                $query->where('user_uuid', $user_id)
+                                $query->where('user_uuid', auth()->user()->uuid)
                             )->orderByDesc('created_at')->limit(100)->get()->toArray();
 
         return response()->json([
