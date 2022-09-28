@@ -239,7 +239,7 @@ class UserTest extends TestCase
         // hogehogeユーザーの名前を更新
         $new_name = 'hugahuga';
         $response = $this->actingAs($user)
-                         ->put("/api/user/profile", [
+                         ->putJson("/api/user/profile", [
                             'name' => $new_name,
                          ]);
 
@@ -264,7 +264,7 @@ class UserTest extends TestCase
         // hogehogeユーザーのプロフを更新
         $new_profile = 'hogehogehugahuga';
         $response = $this->actingAs($user)
-                         ->put("/api/user/profile", [
+                         ->putJson("/api/user/profile", [
                             'profile' => $new_profile,
                          ]);
 
@@ -289,7 +289,7 @@ class UserTest extends TestCase
         // パスワード更新を試行
         $new_password = 'hogehogehugahuga';
         $response = $this->actingAs($user)
-                         ->put("/api/user/password", [
+                         ->putJson("/api/user/password", [
                             'old_password' => 'hogehoge',
                             'new_password' => $new_password,
                          ]);
@@ -315,7 +315,7 @@ class UserTest extends TestCase
         // パスワード更新を誤ったパスワードで試行
         $new_password = 'hogehogehugahuga';
         $response = $this->actingAs($user)
-                         ->put("/api/user/password", [
+                         ->putJson("/api/user/password", [
                             'old_password' => 'invalid_pw',
                             'new_password' => $new_password,
                          ]);
