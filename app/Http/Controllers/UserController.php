@@ -76,12 +76,23 @@ class UserController extends Controller
 
     public function getProfile(string $user_id)
     {
-        $messages = Message::query()
-                            ->join('users', 'user_uuid', '=', 'users.uuid')
-                            ->select('messages.uuid as message_uuid', 'name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
-                            ->withExists('likes as like_status', fn (Builder $query) =>
-                                $query->where('user_uuid', auth()->user()->uuid)
-                            )->orderByDesc('created_at')->limit(100)->get()->toArray();
+        $user = User::with([
+            'messages' => function (Builder $query) {
+                $query->orderByDesc('created_at')->limit(100);
+            },
+            'messages.likes' => function (Builder $query) {
+                $query->where('user_uuid', auth()->user()->uuid);
+            },
+            ])->findOrFail($user_id);
+
+        // message中のuuidをmessage_uuidに変更
+        // like_statusを生成
+        $messages = $user->messages;
+        foreach ($messages as &$message) {
+            $message->message_uuid = $message->uuid;
+            $message->like_status = count($message->likes) > 0;
+            unset($message->likes, $message->uuid);
+        }
 
         return response()->json([
             'status' => 'OK.',
