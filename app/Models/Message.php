@@ -53,7 +53,7 @@ class Message extends Model
     {
         $already_liked =  $this->likes()->where('user_uuid', $like_user_uuid)->exists();
         if ($already_liked) {
-            $this->likes()->where('user_uuid', $like_user_uuid)->first()->delete();
+            $this->likes()->where('user_uuid', $like_user_uuid)->delete();
             $this->decrement('like_count');
         }
     }
