@@ -35,7 +35,7 @@ class UserController extends Controller
     {
         $credentials = $request->validate([
             'name' => 'required|string|max:255',
-            'password' => 'required|string',
+            'password' => 'required|string|regex:/\A(?=.*?[a-z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}+\z/i',
         ]);
 
         if (Auth::attempt($credentials)) {
@@ -128,8 +128,8 @@ class UserController extends Controller
     public function updatePassword(Request $request)
     {
         $request->validate([
-            'old_password' => 'required|string',
-            'new_password' => 'required|string',
+            'old_password' => 'required|string|regex:/\A(?=.*?[a-z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}+\z/i',
+            'new_password' => 'required|string|regex:/\A(?=.*?[a-z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}+\z/i',
         ]);
 
         $user = User::query()->where('uuid', auth()->user()->uuid)->firstOrFail();
