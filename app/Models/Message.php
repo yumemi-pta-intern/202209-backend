@@ -27,7 +27,6 @@ class Message extends Model
         parent::boot();
 	    self::creating(function (Message $message) {
             $message->uuid = UUID::uuid7();
-            $message->user_uuid = Auth::id();
         });
 	}
 

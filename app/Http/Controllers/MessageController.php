@@ -28,6 +28,7 @@ class MessageController extends Controller
         $message = new Message;
         $message->fill([
             'message' => $request->input('message'),
+            'user_uuid' => auth()->user()->uuid
         ]);
         $message->save();
 
