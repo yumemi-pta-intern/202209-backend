@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Message;
@@ -35,7 +36,6 @@ class MessageController extends Controller
 
     public function show(Request $request, $message_id)
     {
-        // $message = Message::selectRaw('uuid, message, user_uuid, like_count, EXISTS(SELECT * FROM likes WHERE user_uuid=? && message_uuid=uuid) as like_status, created_at', [Auth::id()])->where('uuid', $message_id)->firstOrFail();
         $message = Message::query()
                 ->join('users', 'user_uuid', '=', 'users.uuid')
                 ->select('name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
@@ -44,4 +44,24 @@ class MessageController extends Controller
                 )->where('messages.uuid', $message_id)->orderByDesc('created_at')->get();
         return response()->json(['status' => Response::HTTP_OK, 'data' => $message]);
     }
+
+    public function like(Request $request, $message_uuid)
+    {
+        DB::transaction(function () use ($message_uuid) {
+            $message = Message::find($message_uuid);
+            $message->like(Auth::id());
+        });
+        
+        return response()->json(['status' => Response::HTTP_OK]);
+    }
+
+    public function delete_like(Request $request, $message_uuid)
+    {
+        DB::transaction(function () use ($message_uuid) {
+            $message = Message::find($message_uuid);
+            $message->delete_like(Auth::id());
+        });
+    
+        return response()->json([], Response::HTTP_NO_CONTENT);
+    }    
 }
