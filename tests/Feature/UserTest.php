@@ -295,7 +295,7 @@ class UserTest extends TestCase
         ]);
 
         // パスワード更新を試行
-        $new_password = 'hogehogehugahuga';
+        $new_password = 'hogehogehugahuga1234!';
         $response = $this->actingAs($user)
                          ->putJson("/api/user/password", [
                             'old_password' => 'hogehoge1234!',
