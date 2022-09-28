@@ -22,6 +22,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/signup', [UserController::class, 'signup']);
+Route::post('/login', [UserController::class, 'login']);
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/logout', [UserController::class, 'logout']);
+    Route::get('/user/me/', [UserController::class, 'getMe']);
+    Route::get('/user/{user_id}', [UserController::class, 'getProfile']);
+    Route::put('/user/profile', [UserController::class, 'updateProfile']);
+    Route::put('/user/password', [UserController::class, 'updatePassword']);
+});
+
 Route::get('/timeline', [MessageController::class, 'index']);
 Route::post('/message', [MessageController::class, 'create']);
 Route::get('/message/{message_id}', [MessageController::class, 'show']);
