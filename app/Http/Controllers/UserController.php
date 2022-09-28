@@ -78,7 +78,7 @@ class UserController extends Controller
     {
         $messages = Message::query()
                             ->join('users', 'user_uuid', '=', 'users.uuid')
-                            ->select('messages.uuid', 'name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
+                            ->select('messages.uuid as message_uuid', 'name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
                             ->withExists('likes as like_status', fn (Builder $query) =>
                                 $query->where('user_uuid', auth()->user()->uuid)
                             )->orderByDesc('created_at')->limit(100)->get()->toArray();
@@ -86,7 +86,9 @@ class UserController extends Controller
         return response()->json([
             'status' => 'OK.',
             'data' => [
-                'name' => User::query()->firstOrFail($user_id)->name,
+                'name' => $user->name,
+                'uuid' => $user->uuid,
+                'profile_message' => $user->profile_message,
                 'messages' => $messages,
             ],
         ]);

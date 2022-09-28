@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Message;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\User;
@@ -166,6 +167,60 @@ class UserTest extends TestCase
             'status' => 'OK.',
             'data' => [
                 'uuid' => $user->uuid,
+            ]
+        ]);
+    }
+
+    /**
+     * 自身のプロフィールを取得
+     */
+    public function test_get_my_profile()
+    {
+        // DBにhogehogeユーザーを用意
+        $user = User::query()->create([
+            'name' => 'hogehoge',
+            'password' => Hash::make('hogehoge'),
+            'profile_message' => 'my profile',
+        ]);
+
+        $message1 = Message::query()->create([
+            'user_uuid' => $user->uuid,
+            'message' => "1 test message 1."
+        ]);
+        $message2 = Message::query()->create([
+            'user_uuid' => $user->uuid,
+            'message' => "2 test message 2."
+        ]);
+
+        // hogehogeユーザーでログイン状態にして、自身のプロフィールににアクセス
+        $response = $this->actingAs($user)->getJson('/api/user/' . $user->uuid);
+
+        // 200が返ってきていて、uuidが取得できること
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertExactJson([
+            'status' => 'OK.',
+            'data' => [
+                'name' => $user->name,
+                'uuid' => $user->uuid,
+                'profile_message' => $user->profile_message,
+                'messages' => [
+                    [
+                        'message_uuid' => $message1->uuid,
+                        'user_uuid' => $message1->user_uuid,
+                        'message' => $message1->message,
+                        'like_count' => $message1->like_count,
+                        'like_status' => false,
+                        'created_at' => $message1->created_at,
+                    ],
+                    [
+                        'message_uuid' => $message2->uuid,
+                        'user_uuid' => $message2->user_uuid,
+                        'message' => $message2->message,
+                        'like_count' => $message2->like_count,
+                        'like_status' => false,
+                        'created_at' => $message2->created_at,
+                    ],
+                ],
             ]
         ]);
     }
