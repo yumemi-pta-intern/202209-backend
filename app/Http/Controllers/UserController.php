@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|unique:App\Models\User|max:255',
-            'password' => 'required|string',
+            'password' => 'required|string|regex:/\A(?=.*?[a-z])(?=.*?\d)(?=.*?[!-\/:-@[-`{-~])[!-~]{8,100}+\z/i',
         ]);
 
         $user = User::query()->create([

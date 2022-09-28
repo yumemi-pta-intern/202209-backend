@@ -21,7 +21,7 @@ class UserTest extends TestCase
         // アカウント登録
         $response = $this->postJson('/api/signup', [
             'name' => 'hogehoge',
-            'password' => 'hogehoge',
+            'password' => 'hogehoge1234!',
         ]);
 
         // 200が返ってきていること
@@ -41,13 +41,13 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // nameを重複させてアカウント登録
         $response = $this->postJson('/api/signup', [
             'name' => 'hogehoge',
-            'password' => 'hugahuga',
+            'password' => 'hugahuga1234!',
         ]);
 
         // 422でありユーザーが認証されていないこと
@@ -64,13 +64,13 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // hogehogeでログイン試行
         $response = $this->postJson('/api/login', [
             'name' => 'hogehoge',
-            'password' => 'hogehoge',
+            'password' => 'hogehoge1234!',
         ]);
 
         // 200が返ってきていること
@@ -88,13 +88,13 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // DBに誤ったpwでログイン試行
         $response = $this->postJson('/api/login', [
             'name' => 'hogehoge',
-            'password' => 'hugahuga',
+            'password' => 'hugahuga1234!',
         ]);
 
         // 422でありユーザーが認証されていないこと
@@ -110,13 +110,13 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // DBに登録していないhugahugaユーザーでログイン試行
         $response = $this->postJson('/api/login', [
             'name' => 'hugahuga',
-            'password' => 'hugahuga',
+            'password' => 'hugahuga1234!',
         ]);
 
         // 422でありユーザーが認証されていないこと
@@ -134,7 +134,7 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         $user = User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // hogehogeユーザーでログイン状態に
@@ -155,7 +155,7 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         $user = User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // hogehogeユーザーでログイン状態にして、meにアクセス
@@ -179,7 +179,7 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         $user = User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
             'profile_message' => 'my profile',
         ]);
 
@@ -233,7 +233,7 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         $user = User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // hogehogeユーザーの名前を更新
@@ -258,7 +258,7 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         $user = User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // hogehogeユーザーのプロフを更新
@@ -283,14 +283,14 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         $user = User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // パスワード更新を試行
         $new_password = 'hogehogehugahuga';
         $response = $this->actingAs($user)
                          ->putJson("/api/user/password", [
-                            'old_password' => 'hogehoge',
+                            'old_password' => 'hogehoge1234!',
                             'new_password' => $new_password,
                          ]);
 
@@ -309,14 +309,14 @@ class UserTest extends TestCase
         // DBにhogehogeユーザーを用意
         $user = User::query()->create([
             'name' => 'hogehoge',
-            'password' => Hash::make('hogehoge'),
+            'password' => Hash::make('hogehoge1234!'),
         ]);
 
         // パスワード更新を誤ったパスワードで試行
         $new_password = 'hogehogehugahuga';
         $response = $this->actingAs($user)
                          ->putJson("/api/user/password", [
-                            'old_password' => 'invalid_pw',
+                            'old_password' => 'invalid_pw1234!',
                             'new_password' => $new_password,
                          ]);
 
