@@ -30,11 +30,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/{user_id}', [UserController::class, 'getProfile']);
     Route::put('/user/profile', [UserController::class, 'updateProfile']);
     Route::put('/user/password', [UserController::class, 'updatePassword']);
+    
+    Route::get('/timeline', [MessageController::class, 'index']);
+    Route::post('/message', [MessageController::class, 'create']);
+    Route::get('/message/{message_id}', [MessageController::class, 'show']);
+
+    Route::post('/message/{message_id}/like', [MessageController::class, 'like']);
+    Route::delete('/message/{message_id}/like', [MessageController::class, 'delete_like']);
 });
-
-Route::get('/timeline', [MessageController::class, 'index']);
-Route::post('/message', [MessageController::class, 'create']);
-Route::get('/message/{message_id}', [MessageController::class, 'show']);
-
-Route::post('/message/{message_id}/like', [MessageController::class, 'like']);
-Route::delete('/message/{message_id}/like', [MessageController::class, 'delete_like']);
