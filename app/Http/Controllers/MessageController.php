@@ -37,7 +37,7 @@ class MessageController extends Controller
 
     public function show(Request $request, $message_id)
     {
-        if (is_null($message_id) || strcmp($message_id, "")  == 0 || Message::query()->whereUuid($message_id)->doesntExist()) {
+        if (is_null($message_id) || strcmp($message_id, '')  == 0 || Message::query()->whereUuid($message_id)->doesntExist()) {
             return response()->json([
                 'message' => 'message_id may not exist..',
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
