@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Like;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Message;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+
+use App\Models\Message;
 
 class MessageController extends Controller
 {
@@ -37,6 +37,12 @@ class MessageController extends Controller
 
     public function show(Request $request, $message_id)
     {
+        if (is_null($message_id) || strcmp($message_id, "")  == 0 || Message::query()->whereUuid($message_id)->doesntExist()) {
+            return response()->json([
+                'status' => 'NG.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $message = Message::query()
                 ->join('users', 'user_uuid', '=', 'users.uuid')
                 ->select('name', 'user_uuid', 'message', 'like_count', 'messages.created_at')
