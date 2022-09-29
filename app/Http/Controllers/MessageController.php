@@ -20,7 +20,7 @@ class MessageController extends Controller
                 ->withExists('likes as like_status', fn (Builder $query) =>
                     $query->where('user_uuid', Auth::id())
                 )->orderByDesc('created_at')->limit(100)->get();
-        return response()->json([ 'status' => Response::HTTP_OK, 'data' => $messages ]);
+        return response()->json([ 'message' => 'OK.', 'data' => $messages ]);
     }
 
     public function create(Request $request)
@@ -32,14 +32,14 @@ class MessageController extends Controller
         ]);
         $message->save();
 
-        return response()->json([ 'status' => Response::HTTP_OK ]);
+        return response()->json([ 'message' => 'OK.' ]);
     }
 
     public function show(Request $request, $message_id)
     {
         if (is_null($message_id) || strcmp($message_id, "")  == 0 || Message::query()->whereUuid($message_id)->doesntExist()) {
             return response()->json([
-                'status' => 'NG.',
+                'message' => 'message_id may not exist..',
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -49,7 +49,7 @@ class MessageController extends Controller
                 ->withExists('likes as like_status', fn (Builder $query) =>
                     $query->where('user_uuid', Auth::id())
                 )->where('messages.uuid', $message_id)->orderByDesc('created_at')->get();
-        return response()->json(['status' => Response::HTTP_OK, 'data' => $message]);
+        return response()->json(['message' => 'OK.', 'data' => $message]);
     }
 
     public function like(Request $request, $message_uuid)
@@ -59,7 +59,7 @@ class MessageController extends Controller
             $message->like(Auth::id());
         });
         
-        return response()->json(['status' => Response::HTTP_OK]);
+        return response()->json(['message' => 'OK.']);
     }
 
     public function delete_like(Request $request, $message_uuid)

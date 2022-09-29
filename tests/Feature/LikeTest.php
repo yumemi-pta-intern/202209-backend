@@ -52,12 +52,12 @@ class LikeTest extends TestCase
         // like 登録API
         $message_uuid = $message['uuid'];
         $response = $this->actingAs($this->user)->put("/api/message/${message_uuid}/like");
-        $response->assertStatus(Response::HTTP_OK)->assertJson(['status' => Response::HTTP_OK]);
+        $response->assertStatus(Response::HTTP_OK)->assertJson(['message' => 'OK.']);
 
         // message のlike_countが正しく更新されているか
         $message_response = $this->actingAs($this->user)->get("/api/message/${message_uuid}");
         $message_response->assertStatus(Response::HTTP_OK)->assertJson(fn (AssertableJson $json) =>
-            $json->where('status', Response::HTTP_OK)
+            $json->where('message', 'OK.')
             ->has("data", 1, fn ($json) =>
                 $json->where('user_uuid', $this->user->uuid)
                 ->where('message', 'test message')
@@ -85,7 +85,7 @@ class LikeTest extends TestCase
         // like 登録API
         $message_uuid = $message['uuid'];
         $response = $this->actingAs($this->user)->put("/api/message/${message_uuid}/like");
-        $response->assertStatus(Response::HTTP_OK)->assertJson(['status' => Response::HTTP_OK]);
+        $response->assertStatus(Response::HTTP_OK)->assertJson(['message' => 'OK.']);
         $this->assertDatabaseHas('likes', ['user_uuid' => Auth::id(), 'message_uuid' => $message_uuid]);
 
         // like 削除API
@@ -97,7 +97,7 @@ class LikeTest extends TestCase
         // message のlike_count の確認
         $message_response = $this->actingAs($this->user)->get("/api/message/${message_uuid}");
         $message_response->assertStatus(Response::HTTP_OK)->assertJson(fn (AssertableJson $json) =>
-            $json->where('status', Response::HTTP_OK)
+            $json->where('message', 'OK.')
             ->has("data", 1, fn ($json) =>
                 $json->where('user_uuid', $this->user->uuid)
                 ->where('message', 'test message')
@@ -160,19 +160,19 @@ class LikeTest extends TestCase
         // like 登録API
         $message_uuid = $message['uuid'];
         $response = $this->actingAs($this->user)->put("/api/message/${message_uuid}/like");
-        $response->assertStatus(Response::HTTP_OK)->assertJson(['status' => Response::HTTP_OK]);
+        $response->assertStatus(Response::HTTP_OK)->assertJson(['message' => 'OK.']);
         $this->assertDatabaseHas('likes', ['user_uuid' => Auth::id(), 'message_uuid' => $message_uuid]);
 
         // like 登録API
         $message_uuid = $message['uuid'];
         $response = $this->actingAs($this->user2)->put("/api/message/${message_uuid}/like");
-        $response->assertStatus(Response::HTTP_OK)->assertJson(['status' => Response::HTTP_OK]);
+        $response->assertStatus(Response::HTTP_OK)->assertJson(['message' => 'OK.']);
         $this->assertDatabaseHas('likes', ['user_uuid' => Auth::id(), 'message_uuid' => $message_uuid]);
 
         // message のlike_count の確認
         $message_response = $this->actingAs($this->user)->get("/api/message/${message_uuid}");
         $message_response->assertStatus(Response::HTTP_OK)->assertJson(fn (AssertableJson $json) =>
-            $json->where('status', Response::HTTP_OK)
+            $json->where('message', 'OK.')
             ->has("data", 1, fn ($json) =>
                 $json->where('user_uuid', $this->user->uuid)
                 ->where('message', 'test message')

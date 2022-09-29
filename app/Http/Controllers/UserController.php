@@ -27,7 +27,7 @@ class UserController extends Controller
         Auth::login($user);
 
         return response()->json([
-            'status' => 'OK.',
+            'message' => 'OK.',
         ], Response::HTTP_OK);
     }
 
@@ -42,13 +42,13 @@ class UserController extends Controller
             $request->session()->regenerate();
 
             return response()->json([
-                'status' => 'OK.',
+                'message' => 'OK.',
             ], Response::HTTP_OK);
+        }else {
+            return response()->json([
+                'message' => 'name or password may not match.',
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        return response()->json([
-            'status' => 'Error.',
-        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     public function logout(Request $request)
@@ -60,14 +60,14 @@ class UserController extends Controller
         $request->session()->regenerateToken();
     
         return response()->json([
-            'status' => 'OK.',
+            'message' => 'OK.',
         ], Response::HTTP_OK);
     }
 
     public function getMe()
     {
         return response()->json([
-            'status' => 'OK.',
+            'message' => 'OK.',
             'data' => [
                 'uuid' => auth()->user()->uuid,
             ],
@@ -78,7 +78,7 @@ class UserController extends Controller
     {
         if (is_null($user_id) || strcmp($user_id, "")  == 0 || User::query()->whereUuid($user_id)->doesntExist()) {
             return response()->json([
-                'status' => 'NG.',
+                'message' => 'user_id may not exist.',
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -101,7 +101,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'status' => 'OK.',
+            'message' => 'OK.',
             'data' => [
                 'name' => $user->name,
                 'uuid' => $user->uuid,
@@ -127,7 +127,7 @@ class UserController extends Controller
         $user->save();
 
         return response()->json([
-            'status' => 'Changed.',
+            'message' => 'OK.',
         ], Response::HTTP_OK);
     }
 
@@ -142,7 +142,7 @@ class UserController extends Controller
 
         if(!Hash::check($request->old_password, $user->password)){
             return response()->json([
-                "error" => "Old password doesn't match."
+                'message' => 'old password doesn\'t match.'
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -150,7 +150,7 @@ class UserController extends Controller
         $user->save();
 
         return response()->json([
-            'status' => 'Changed.',
+            'message' => 'OK.',
         ], Response::HTTP_OK);
     }
 }
