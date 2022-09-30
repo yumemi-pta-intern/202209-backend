@@ -167,7 +167,7 @@ class UserTest extends TestCase
         // 200が返ってきていて、uuidが取得できること
         $response->assertStatus(Response::HTTP_OK);
         $response->assertExactJson([
-            'status' => 'OK.',
+            'message' => 'OK.',
             'data' => [
                 'uuid' => $user->uuid,
             ]
@@ -206,7 +206,7 @@ class UserTest extends TestCase
         // 200が返ってきていて、uuidが取得できること
         $response->assertStatus(Response::HTTP_OK);
         $response->assertExactJson([
-            'status' => 'OK.',
+            'message' => 'OK.',
             'data' => [
                 'name' => $user->name,
                 'uuid' => $user->uuid,

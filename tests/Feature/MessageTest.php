@@ -2,16 +2,15 @@
 
 namespace Tests\Feature;
 
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Testing\Fluent\AssertableJson;
+use Tests\TestCase;
+
 use App\Models\Like;
 use App\Models\Message;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Testing\Fluent\AssertableJson;
-use Symfony\Component\HttpFoundation\Response;
-use Tests\TestCase;
-use UUID\UUID;
 
 class MessageTest extends TestCase
 {
@@ -39,7 +38,7 @@ class MessageTest extends TestCase
         $response = $this->actingAs($this->user)->post('/api/message', ['message' => 'test']);
         $response = $this->get('/api/timeline');
         $response->assertStatus(200)->assertJson(fn (AssertableJson $json) =>
-            $json->where('status', Response::HTTP_OK)
+            $json->where('message', 'OK.')
                 ->has("data", 1, fn ($json) =>
                     $json->where('user_uuid', $this->user->uuid)
                     ->where('message', 'test')
@@ -73,7 +72,7 @@ class MessageTest extends TestCase
 
         $response = $this->actingAs($this->user)->get('/api/timeline');
         $response->assertStatus(200)->assertJson(fn (AssertableJson $json) =>
-            $json->where('status', Response::HTTP_OK)
+            $json->where('message', 'OK.')
                 ->has("data", 1, fn ($json) =>
                     $json->where('user_uuid', $this->user->uuid)
                     ->where('message', 'test2')
@@ -89,7 +88,7 @@ class MessageTest extends TestCase
     public function test_create_login()
     {
         $response = $this->actingAs($this->user)->postJson('/api/message', ['message' => 'test']);
-        $response->assertStatus(200)->assertJson(['status' => Response::HTTP_OK]);
+        $response->assertStatus(200)->assertJson(['message' => 'OK.']);
         $message = \App\Models\Message::all()->first();
         $this->assertNotNull($message);
     }
@@ -113,7 +112,7 @@ class MessageTest extends TestCase
         $message_uuid = $message['uuid'];
         $response = $this->actingAs($this->user)->get("/api/message/${message_uuid}");
         $response->assertStatus(200)->assertJson(fn (AssertableJson $json) =>
-            $json->where('status', Response::HTTP_OK)
+            $json->where('message', 'OK.')
                 ->has("data", 1, fn ($json) =>
                     $json->where('user_uuid', $this->user->uuid)
                     ->where('message', 'show message test')
