@@ -76,12 +76,6 @@ class UserController extends Controller
 
     public function getProfile(string $user_id)
     {
-        if (is_null($user_id) || strcmp($user_id, '')  == 0 || User::query()->whereUuid($user_id)->doesntExist()) {
-            return response()->json([
-                'message' => 'user_id may not exist.',
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
         $user = User::with([
             'messages' => function (Builder $query) {
                 $query->orderByDesc('created_at')->limit(100);

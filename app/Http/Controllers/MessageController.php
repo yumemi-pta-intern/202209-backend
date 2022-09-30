@@ -37,11 +37,7 @@ class MessageController extends Controller
 
     public function show(Request $request, $message_id)
     {
-        if (is_null($message_id) || strcmp($message_id, '')  == 0 || Message::query()->whereUuid($message_id)->doesntExist()) {
-            return response()->json([
-                'message' => 'message_id may not exist..',
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        Message::query()->findOrFail($message_id);
 
         $message = Message::query()
                 ->join('users', 'user_uuid', '=', 'users.uuid')
@@ -49,23 +45,23 @@ class MessageController extends Controller
                 ->withExists('likes as like_status', fn (Builder $query) =>
                     $query->where('user_uuid', Auth::id())
                 )->where('messages.uuid', $message_id)->orderByDesc('created_at')->get();
-        return response()->json(['message' => 'OK.', 'data' => $message]);
+        return response()->json([ 'message' => 'OK.', 'data' => $message ]);
     }
 
     public function like(Request $request, $message_uuid)
     {
         DB::transaction(function () use ($message_uuid) {
-            $message = Message::find($message_uuid);
+            $message = Message::findOrFail($message_uuid);
             $message->like(Auth::id());
         });
         
-        return response()->json(['message' => 'OK.']);
+        return response()->json([ 'message' => 'OK.' ]);
     }
 
     public function delete_like(Request $request, $message_uuid)
     {
         DB::transaction(function () use ($message_uuid) {
-            $message = Message::find($message_uuid);
+            $message = Message::findOrFail($message_uuid);
             $message->delete_like(Auth::id());
         });
     
